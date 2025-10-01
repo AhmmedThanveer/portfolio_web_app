@@ -11,12 +11,46 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_portfolio/Core/Constants/app_colors.dart';
 import 'package:my_portfolio/Core/Utils/section_keys.dart';
+import 'package:my_portfolio/Ui/View/About/about.dart';
+import 'package:my_portfolio/Ui/View/Experience/experience.dart';
 import 'package:my_portfolio/Ui/View/Header/header.dart';
 import 'package:my_portfolio/Ui/View/Navbar/portfolioNavBar.dart';
+import 'package:my_portfolio/Ui/View/loading.dart';
 
 void main() => runApp(SnapMasterApp());
 
-class SnapMasterApp extends StatelessWidget {
+class SnapMasterApp extends StatefulWidget {
+  SnapMasterApp({super.key});
+
+  @override
+  State<SnapMasterApp> createState() => _SnapMasterAppState();
+}
+
+class _SnapMasterAppState extends State<SnapMasterApp> {
+  bool _isReady = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAssets();
+  }
+
+  Future<void> _loadAssets() async {
+    // ⏳ Precache images
+    await Future.wait([
+      precacheImage(const AssetImage("assets/images/hero_large.jpeg"), context),
+
+      // add all your gallery / portfolio images here
+    ]);
+
+    // ⏳ Preload fonts
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    setState(() {
+      _isReady = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -26,7 +60,7 @@ class SnapMasterApp extends StatelessWidget {
         scaffoldBackgroundColor: Color(0xFF172412), // deep green background
         textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
       ),
-      home: PortfolioHomePage(),
+      home: _isReady ? PortfolioHomePage() : const SplashScreen(),
     );
   }
 }
@@ -107,122 +141,6 @@ Widget roundedImage(String asset, {double size = 80}) {
       child: Image.asset(asset, fit: BoxFit.cover),
     ),
   );
-}
-
-// ---------------------- About Section ----------------------
-class AboutSection extends StatelessWidget {
-  final bool isWide;
-  const AboutSection({super.key, this.isWide = false}); // 👈 add super.key
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      key: key, // 👈 ensures this widget is tied to the GlobalKey
-      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 30),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SectionTitle('about'),
-          SizedBox(height: 12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 2,
-                child: Text(
-                  'Welcome to my world of visual storytelling. I am a passionate photographer dedicated to freezing moments in time — with a keen eye for detail and a love for authentic emotions.',
-                  style: TextStyle(
-                    color: kAccent.withOpacity(0.9),
-                    fontSize: 16,
-                    height: 1.6,
-                  ),
-                ),
-              ),
-              if (isWide) SizedBox(width: 24),
-              if (isWide)
-                Expanded(
-                  child: Center(
-                    child: Container(
-                      width: 220,
-                      height: 220,
-                      decoration: BoxDecoration(
-                        color: kAccent.withOpacity(0.06),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Image.asset('assets/images/camera.png'),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ---------------------- Works List ----------------------
-class WorksSection extends StatelessWidget {
-  final bool compact;
-  const WorksSection({super.key, this.compact = false}); // 👈 add super.key
-
-  Widget _workTile(String year, String title) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      padding: EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: kAccent.withOpacity(0.12)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                year,
-                style: TextStyle(
-                  color: kAccent.withOpacity(0.9),
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              SizedBox(height: 6),
-              Text(title, style: TextStyle(color: kAccent.withOpacity(0.9))),
-            ],
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              side: BorderSide(color: kAccent.withOpacity(0.18)),
-            ),
-            onPressed: () {},
-            child: Text('Discover', style: TextStyle(color: kAccent)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      key: key, // 👈 attach key for scroll
-      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 30),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SectionTitle('works'),
-          SizedBox(height: 12),
-          _workTile('2024', 'Unveiling Perspectives'),
-          _workTile('2023', 'Real life'),
-          _workTile('2023', 'Emotion Power'),
-          _workTile('2022', 'Eye and eye'),
-        ],
-      ),
-    );
-  }
 }
 
 // ---------------------- Gallery ----------------------
@@ -371,7 +289,7 @@ class _MobileLayoutState extends State<MobileLayout> {
             onContactTap: () => _scrollTo(SectionKeys.contact),
           ),
 
-          AboutSection(isWide: false, key: SectionKeys.about),
+          AboutSection(key: SectionKeys.about),
           WorksSection(compact: true, key: SectionKeys.works),
           ExperienceSection(key: SectionKeys.experience),
           // GallerySection(),
@@ -422,7 +340,7 @@ class _TabletLayoutState extends State<TabletLayout> {
             onContactTap: () => _scrollTo(SectionKeys.contact),
           ),
 
-          AboutSection(isWide: true, key: SectionKeys.about),
+          AboutSection(key: SectionKeys.about),
           WorksSection(key: SectionKeys.works),
           ExperienceSection(key: SectionKeys.experience),
           GallerySection(),
