@@ -7,49 +7,23 @@
 // Assets: add your images to assets/images/ and declare in pubspec.yaml
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_portfolio/Core/Constants/app_colors.dart';
 import 'package:my_portfolio/Core/Utils/section_keys.dart';
-import 'package:my_portfolio/Ui/View/About/about.dart';
-import 'package:my_portfolio/Ui/View/Experience/experience.dart';
-import 'package:my_portfolio/Ui/View/Header/header.dart';
-import 'package:my_portfolio/Ui/View/Navbar/portfolioNavBar.dart';
+import 'package:my_portfolio/State/Cubit/portfolio_cubit.dart';
+import 'package:my_portfolio/Ui/Layout/desktop_layout.dart';
+import 'package:my_portfolio/Ui/Layout/mobile_layout.dart';
+import 'package:my_portfolio/Ui/Layout/tablet_layout.dart';
 import 'package:my_portfolio/Ui/View/loading.dart';
 
-void main() => runApp(SnapMasterApp());
-
-class SnapMasterApp extends StatefulWidget {
-  SnapMasterApp({super.key});
-
-  @override
-  State<SnapMasterApp> createState() => _SnapMasterAppState();
+void main() {
+  runApp(BlocProvider(create: (_) => PortfolioCubit(), child: const MyApp()));
 }
 
-class _SnapMasterAppState extends State<SnapMasterApp> {
-  bool _isReady = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadAssets();
-  }
-
-  Future<void> _loadAssets() async {
-    // ⏳ Precache images
-    await Future.wait([
-      precacheImage(const AssetImage("assets/images/hero_large.jpeg"), context),
-
-      // add all your gallery / portfolio images here
-    ]);
-
-    // ⏳ Preload fonts
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    setState(() {
-      _isReady = true;
-    });
-  }
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -57,54 +31,67 @@ class _SnapMasterAppState extends State<SnapMasterApp> {
       debugShowCheckedModeBanner: false,
       title: 'Thanveer Portfolio',
       theme: ThemeData(
-        scaffoldBackgroundColor: Color(0xFF172412), // deep green background
-        textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
+        scaffoldBackgroundColor: kDark,
+        // textTheme: GoogleFonts.poppinsTextTheme(),
+        useMaterial3: true,
       ),
-      home: _isReady ? PortfolioHomePage() : const SplashScreen(),
+      home: const PortfolioHomePage(),
     );
   }
 }
 
 class PortfolioHomePage extends StatefulWidget {
+  const PortfolioHomePage({super.key});
+
   @override
   State<PortfolioHomePage> createState() => _PortfolioHomePageState();
 }
 
 class _PortfolioHomePageState extends State<PortfolioHomePage> {
-  final ScrollController _scrollController = ScrollController();
-
-  void _scrollTo(GlobalKey key) {
-    final ctx = key.currentContext;
-    if (ctx != null) {
-      Scrollable.ensureVisible(
-        ctx,
-        duration: const Duration(milliseconds: 600),
-        curve: Curves.easeInOut,
-      );
-    }
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => context.read<PortfolioCubit>().initApp(context));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          if (constraints.maxWidth >= 1100) {
-            return DesktopLayout(
-              scrollTo: _scrollTo,
-              controller: _scrollController,
-            );
-          } else if (constraints.maxWidth >= 700) {
-            return TabletLayout(
-              onNavTap: _scrollTo,
-              controller: _scrollController,
-            );
-          } else {
-            return MobileLayout(
-              onNavTap: _scrollTo,
-              controller: _scrollController,
+      body: BlocBuilder<PortfolioCubit, PortfolioState>(
+        builder: (context, state) {
+          // ---- Loading screen ----
+          if (state is PortfolioLoading || state is PortfolioInitial) {
+            return TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: 1),
+              duration: const Duration(seconds: 2),
+              builder: (context, value, _) =>
+                  RetroLoadingScreen(progress: value),
             );
           }
+
+          // ---- Responsive Layout ----
+          final cubit = context.read<PortfolioCubit>();
+
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth >= 1100) {
+                return DesktopLayout(
+                  controller: cubit.scrollController,
+                  scrollTo: cubit.scrollTo,
+                );
+              } else if (constraints.maxWidth >= 700) {
+                return TabletLayout(
+                  controller: cubit.scrollController,
+                  onNavTap: cubit.scrollTo,
+                );
+              } else {
+                return MobileLayout(
+                  controller: cubit.scrollController,
+                  onNavTap: cubit.scrollTo,
+                );
+              }
+            },
+          );
         },
       ),
     );
@@ -141,276 +128,4 @@ Widget roundedImage(String asset, {double size = 80}) {
       child: Image.asset(asset, fit: BoxFit.cover),
     ),
   );
-}
-
-// ---------------------- Gallery ----------------------
-class GallerySection extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 30),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SectionTitle('gallery'),
-          SizedBox(height: 12),
-          Container(
-            height: 240,
-            child: Center(
-              child: Image.asset(
-                'assets/images/hero_large.jpg',
-                fit: BoxFit.cover,
-                width: double.infinity,
-              ),
-            ),
-          ),
-          SizedBox(height: 18),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              roundedImage('assets/images/thumb1.jpg', size: 100),
-              SizedBox(width: 14),
-              roundedImage('assets/images/thumb2.jpg', size: 100),
-              SizedBox(width: 14),
-              roundedImage('assets/images/thumb3.jpg', size: 100),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ContactSection extends StatelessWidget {
-  const ContactSection({super.key}); // 👈 add super.key
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      key: key,
-      margin: EdgeInsets.symmetric(horizontal: 24, vertical: 36),
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: kAccent.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'CONTACT ME',
-            style: TextStyle(
-              color: kAccent,
-              fontSize: 44,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-          SizedBox(height: 12),
-          Text(
-            'Interested in working together? Drop a message and I will reply soon!',
-            style: TextStyle(color: kAccent.withOpacity(0.9)),
-          ),
-          SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Your name',
-                    filled: true,
-                    fillColor: Colors.white24,
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Email',
-                    filled: true,
-                    fillColor: Colors.white24,
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ),
-              SizedBox(width: 12),
-              ElevatedButton(
-                onPressed: () {},
-                child: Padding(
-                  padding: EdgeInsets.all(14),
-                  child: Text('Send'),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class MobileLayout extends StatefulWidget {
-  final Function(GlobalKey) onNavTap;
-  final ScrollController controller;
-
-  const MobileLayout({
-    super.key,
-    required this.onNavTap,
-    required this.controller,
-  });
-
-  @override
-  State<MobileLayout> createState() => _MobileLayoutState();
-}
-
-class _MobileLayoutState extends State<MobileLayout> {
-  void _scrollTo(GlobalKey key) {
-    Scrollable.ensureVisible(
-      key.currentContext!,
-      duration: const Duration(milliseconds: 600),
-      curve: Curves.easeInOut,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: widget.controller,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const HeroHeader(),
-
-          PortfolioNavBar(
-            onAboutTap: () => _scrollTo(SectionKeys.about),
-            onWorksTap: () => _scrollTo(SectionKeys.works),
-            onExperienceTap: () => _scrollTo(SectionKeys.experience),
-            onContactTap: () => _scrollTo(SectionKeys.contact),
-          ),
-
-          AboutSection(key: SectionKeys.about),
-          WorksSection(compact: true, key: SectionKeys.works),
-          ExperienceSection(key: SectionKeys.experience),
-          // GallerySection(),
-          ContactSection(key: SectionKeys.contact),
-
-          const SizedBox(height: 60),
-        ],
-      ),
-    );
-  }
-}
-
-class TabletLayout extends StatefulWidget {
-  final Function(GlobalKey) onNavTap;
-  final ScrollController controller;
-
-  const TabletLayout({
-    super.key,
-    required this.onNavTap,
-    required this.controller,
-  });
-
-  @override
-  State<TabletLayout> createState() => _TabletLayoutState();
-}
-
-class _TabletLayoutState extends State<TabletLayout> {
-  void _scrollTo(GlobalKey key) {
-    Scrollable.ensureVisible(
-      key.currentContext!,
-      duration: const Duration(milliseconds: 600),
-      curve: Curves.easeInOut,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: widget.controller,
-      child: Column(
-        children: [
-          const HeroHeader(),
-
-          PortfolioNavBar(
-            onAboutTap: () => _scrollTo(SectionKeys.about),
-            onWorksTap: () => _scrollTo(SectionKeys.works),
-            onExperienceTap: () => _scrollTo(SectionKeys.experience),
-            onContactTap: () => _scrollTo(SectionKeys.contact),
-          ),
-
-          AboutSection(key: SectionKeys.about),
-          WorksSection(key: SectionKeys.works),
-          ExperienceSection(key: SectionKeys.experience),
-          GallerySection(),
-          ContactSection(key: SectionKeys.contact),
-
-          const SizedBox(height: 60),
-        ],
-      ),
-    );
-  }
-}
-
-class DesktopLayout extends StatelessWidget {
-  final ScrollController controller;
-  final Function(GlobalKey) scrollTo;
-
-  const DesktopLayout({
-    super.key,
-    required this.controller,
-    required this.scrollTo,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: controller,
-      child: Column(
-        children: [
-          const HeroHeader(),
-
-          // 👇 NavBar comes here (only once, right after HeroHeader)
-          PortfolioNavBar(
-            onAboutTap: () => scrollTo(SectionKeys.about),
-            onWorksTap: () => scrollTo(SectionKeys.works),
-            onExperienceTap: () => scrollTo(SectionKeys.experience),
-            onContactTap: () => scrollTo(SectionKeys.contact),
-          ),
-
-          AboutSection(key: SectionKeys.about),
-          WorksSection(key: SectionKeys.works),
-          ExperienceSection(key: SectionKeys.experience),
-          ContactSection(key: SectionKeys.contact),
-        ],
-      ),
-    );
-  }
-}
-
-class ExperienceSection extends StatelessWidget {
-  const ExperienceSection({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SectionTitle('experience'),
-          const SizedBox(height: 12),
-          Text(
-            '3+ years of experience in Flutter & Web Development.\nWorked on mobile/web apps for startups and enterprises.',
-            style: TextStyle(
-              color: kAccent.withOpacity(0.9),
-              fontSize: 16,
-              height: 1.6,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

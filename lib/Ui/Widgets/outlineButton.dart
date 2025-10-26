@@ -29,8 +29,9 @@ class CustomOutlineButton extends StatelessWidget {
           onPressed: onPressed,
           child: Text(
             text,
-            style: GoogleFonts.montserrat(
+            style: TextStyle(
               fontSize: 14,
+              fontFamily: "Montserrat",
               fontWeight: FontWeight.w500,
               color: kAccent,
             ),

@@ -6,4 +6,5 @@ class SectionKeys {
   static final experience = GlobalKey();
   static final contact = GlobalKey();
   static final hero = GlobalKey();
+  static final services = GlobalKey();
 }

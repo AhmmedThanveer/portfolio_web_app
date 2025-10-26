@@ -83,14 +83,13 @@ class HeroHeader extends StatelessWidget {
                 right: 30,
                 child: Text(
                   "PUB  DEV",
-                  style: GoogleFonts.bebasNeue(
-                    textStyle: TextStyle(
-                      color: const Color(0xFF172412),
-                      fontSize: titleSize.clamp(60, 200),
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: isMobile ? 2.7 : 2,
-                      height: 1,
-                    ),
+                  style: TextStyle(
+                    color: const Color(0xFF172412),
+                    fontSize: titleSize.clamp(60, 200),
+                    fontWeight: FontWeight.w900,
+                    fontFamily: "BebasNeue",
+                    letterSpacing: isMobile ? 2.7 : 2,
+                    height: 1,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -128,12 +127,11 @@ class HeroHeader extends StatelessWidget {
                 child: Text(
                   "What makes my work unique is a blend of technical expertise and personal creativity.",
                   textDirection: TextDirection.rtl,
-                  style: GoogleFonts.montserrat(
-                    textStyle: TextStyle(
-                      color: Colors.black,
-                      fontSize: (screenWidth * 0.012).clamp(10, 18),
-                      height: 1.4,
-                    ),
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: (screenWidth * 0.012).clamp(10, 18),
+                    height: 1.4,
+                    fontFamily: "Montserrat",
                   ),
                 ),
               ),
@@ -157,12 +155,11 @@ class HeroHeader extends StatelessWidget {
                     Text(
                       "Immerse yourself in the world of development where every project tells a story of innovation.",
                       textDirection: TextDirection.ltr,
-                      style: GoogleFonts.montserrat(
-                        textStyle: TextStyle(
-                          color: Colors.black,
-                          fontSize: (screenWidth * 0.012).clamp(10, 18),
-                          height: 1.4,
-                        ),
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: (screenWidth * 0.012).clamp(10, 18),
+                        height: 1.4,
+                        fontFamily: "Montserrat",
                       ),
                     ),
                     const SizedBox(height: 10),

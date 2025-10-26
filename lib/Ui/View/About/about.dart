@@ -17,7 +17,7 @@ class AboutSection extends StatelessWidget {
     return Container(
       width: double.infinity,
       color: kDark,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -36,7 +36,7 @@ class AboutSection extends StatelessWidget {
               children: [
                 Text(
                   "about",
-                  style: GoogleFonts.openSans(
+                  style: TextStyle(
                     fontSize: isMobile
                         ? 60
                         : isTablet
@@ -44,7 +44,8 @@ class AboutSection extends StatelessWidget {
                         : 120,
                     fontWeight: FontWeight.w800, // ExtraBold
                     color: kAccent,
-                    letterSpacing: -5,
+                    fontFamily: 'OpenSans',
+                    letterSpacing: -4.5,
                     height: 1,
                   ),
                 ),
@@ -83,7 +84,8 @@ class AboutSection extends StatelessWidget {
                   "a passionate photographer dedicated to freezing moments in time. "
                   "With a keen eye for detail and a love for authentic emotions.",
                   textDirection: TextDirection.rtl,
-                  style: GoogleFonts.montserrat(
+                  style: TextStyle(
+                    fontFamily: 'Montserrat',
                     fontSize: isMobile ? 12 : 14,
                     color: kAccent.withOpacity(0.9),
                     height: 1.4,
