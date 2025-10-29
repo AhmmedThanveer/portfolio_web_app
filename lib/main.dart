@@ -64,8 +64,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
             return TweenAnimationBuilder<double>(
               tween: Tween(begin: 0, end: 1),
               duration: const Duration(seconds: 2),
-              builder: (context, value, _) =>
-                  RetroLoadingScreen(progress: value),
+              builder: (context, value, _) => RetroLoadingScreen(),
             );
           }
 
