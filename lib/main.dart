@@ -96,35 +96,3 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
     );
   }
 }
-
-// ---------------------- Shared widgets & constants ----------------------
-
-class SectionTitle extends StatelessWidget {
-  final String title;
-  SectionTitle(this.title);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: TextStyle(
-        color: kAccent,
-        fontSize: 64,
-        fontWeight: FontWeight.w800,
-        letterSpacing: 1,
-      ),
-    );
-  }
-}
-
-Widget roundedImage(String asset, {double size = 80}) {
-  return ClipRRect(
-    borderRadius: BorderRadius.circular(16),
-    child: Container(
-      width: size,
-      height: size,
-      color: Colors.black26,
-      child: Image.asset(asset, fit: BoxFit.cover),
-    ),
-  );
-}

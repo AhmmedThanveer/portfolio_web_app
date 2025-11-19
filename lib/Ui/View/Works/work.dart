@@ -103,7 +103,7 @@ class WorksSection extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _projectTile(
-                      "assets/images/wrk5.JPG",
+                      "assets/images/wrk5.jpg",
                       "SafeAgent — Real Estate Rentals",
                       "Real estate rental portal with maintenance service features & client dashboard.",
                       isMobile,
@@ -111,7 +111,7 @@ class WorksSection extends StatelessWidget {
                     ),
                     const SizedBox(width: 20),
                     _projectTile(
-                      "assets/images/wrk2.JPG",
+                      "assets/images/wrk2.jpg",
                       "Quizo — Quiz Application",
                       "A Flutter-based quiz app with category selection, scoring & animations.",
                       isMobile,
@@ -119,7 +119,7 @@ class WorksSection extends StatelessWidget {
                     ),
                     const SizedBox(width: 20),
                     _projectTile(
-                      "assets/images/wrk3.JPG",
+                      "assets/images/wrk3.jpg",
                       "The Growth Companion LMS",
                       "Learning Management System with video lessons, coaching modules & progress tracking.",
                       isMobile,

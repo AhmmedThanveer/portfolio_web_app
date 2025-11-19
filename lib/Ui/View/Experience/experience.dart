@@ -26,7 +26,7 @@ class ExperienceSection extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         decoration: BoxDecoration(
           borderRadius: isSelected
-              ? BorderRadius.circular(22)
+              ? BorderRadius.circular(12)
               : BorderRadius.circular(0),
           border: Border(
             top: BorderSide(

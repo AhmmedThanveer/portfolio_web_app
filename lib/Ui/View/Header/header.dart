@@ -8,7 +8,6 @@ import 'package:url_launcher/url_launcher.dart';
 class HeroHeader extends StatelessWidget {
   const HeroHeader({super.key});
 
-  // 🔗 Function to launch URL
   Future<void> _openUrl(String url) async {
     final Uri uri = Uri.parse(url);
 
@@ -22,25 +21,26 @@ class HeroHeader extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    final double titleSize = screenWidth * 0.25;
-
     final bool isMobile = screenWidth < 700;
     final bool isTablet = screenWidth >= 700 && screenWidth < 1100;
 
+    final double titleSize = screenWidth * 0.25;
+
     final double headerHeight = isMobile
-        ? screenHeight * 0.50
+        ? screenHeight * 0.52
         : isTablet
         ? screenHeight * 0.65
         : screenHeight * 0.70;
 
+    /// 🔥 FIXED: Smaller me.png on mobile
     final double userImageWidth = isMobile
-        ? screenWidth * 0.5
+        ? screenWidth * 0.43
         : isTablet
         ? screenWidth * 0.38
         : screenWidth * 0.25;
 
     final double userImageHeight = isMobile
-        ? screenHeight * 0.30
+        ? screenHeight * 0.28
         : isTablet
         ? screenHeight * 0.55
         : screenHeight * 0.55;
@@ -67,12 +67,13 @@ class HeroHeader extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              // 📝 Large Title
+              /// 📝 Large Title — FIXED POSITION
               Positioned(
                 top: isMobile
-                    ? screenHeight * 0.22
+                    ? screenHeight *
+                          0.28 // lower for mobile
                     : isTablet
-                    ? screenHeight * 0.20
+                    ? screenHeight * 0.22
                     : screenHeight * 0.13,
                 left: 0,
                 right: 25,
@@ -90,7 +91,7 @@ class HeroHeader extends StatelessWidget {
                 ),
               ),
 
-              // 🖼️ User Image
+              /// 🖼️ User Image — FIXED SIZE
               Positioned(
                 bottom: 0,
                 left: isMobile ? 0 : 0,
@@ -105,11 +106,12 @@ class HeroHeader extends StatelessWidget {
                 ),
               ),
 
-              // 📜 Right-side Bio (Short)
+              /// 📜 Right Small Bio — FIXED POSITION
               Positioned(
                 right: 10,
                 top: isMobile
-                    ? screenHeight * 0.40
+                    ? screenHeight *
+                          0.43 // moved down
                     : isTablet
                     ? screenHeight * 0.55
                     : screenHeight * 0.40,
@@ -126,11 +128,12 @@ class HeroHeader extends StatelessWidget {
                 ),
               ),
 
-              // 🤝 Left Bio + Social Media Icons
+              /// 🤝 Left Bio + Social Icons — FIXED POSITION
               Positioned(
                 left: 40,
                 top: isMobile
-                    ? screenHeight * 0.05
+                    ? screenHeight *
+                          0.08 // moved down slightly
                     : isTablet
                     ? screenHeight * 0.10
                     : screenHeight * 0.15,
@@ -150,7 +153,6 @@ class HeroHeader extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
 
-                    // 🔗 Social Buttons
                     Row(
                       children: [
                         IconButton(
@@ -162,7 +164,6 @@ class HeroHeader extends StatelessWidget {
                             );
                           },
                         ),
-
                         IconButton(
                           icon: const Icon(FontAwesomeIcons.instagram),
                           color: kDark,
@@ -172,7 +173,6 @@ class HeroHeader extends StatelessWidget {
                             );
                           },
                         ),
-
                         IconButton(
                           icon: const Icon(FontAwesomeIcons.facebook),
                           color: kDark,
