@@ -21,15 +21,14 @@ class AboutSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 🔹 Top Row => about + Learn More
+          // 🔹 Title Row (about + Learn More)
           Padding(
             padding: EdgeInsets.symmetric(
               horizontal: isMobile
                   ? 0
                   : isTablet
-                  ? screenWidth *
-                        0.05 // Tablet -> a bit of padding
-                  : screenWidth * 0.1, // Desktop -> more center
+                  ? screenWidth * 0.05
+                  : screenWidth * 0.1,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -42,7 +41,7 @@ class AboutSection extends StatelessWidget {
                         : isTablet
                         ? 90
                         : 120,
-                    fontWeight: FontWeight.w800, // ExtraBold
+                    fontWeight: FontWeight.w800,
                     color: kAccent,
                     fontFamily: 'OpenSans',
                     letterSpacing: -4.5,
@@ -52,7 +51,7 @@ class AboutSection extends StatelessWidget {
                 CustomOutlineButton(
                   text: "Learn More",
                   onPressed: () {
-                    // 👉 Do something
+                    // 👉 Future routing or scroll action
                   },
                 ),
               ],
@@ -61,15 +60,14 @@ class AboutSection extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-          // 🔹 Right side description text
+          // 🔹 About Description Content
           Padding(
             padding: EdgeInsets.symmetric(
               horizontal: isMobile
                   ? 0
                   : isTablet
-                  ? screenWidth *
-                        0.05 // Tablet -> a bit of padding
-                  : screenWidth * 0.1, // Desktop -> more center
+                  ? screenWidth * 0.05
+                  : screenWidth * 0.1,
             ),
             child: Align(
               alignment: Alignment.centerRight,
@@ -79,24 +77,41 @@ class AboutSection extends StatelessWidget {
                     : isTablet
                     ? screenWidth * 0.6
                     : screenWidth * 0.4,
-                child: Text(
-                  "Welcome to my world of visual storytelling. I am Hanz Schumacher, "
-                  "a passionate photographer dedicated to freezing moments in time. "
-                  "With a keen eye for detail and a love for authentic emotions.",
+                child: RichText(
                   textDirection: TextDirection.rtl,
-                  style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontSize: isMobile ? 12 : 14,
-                    color: kAccent.withOpacity(0.9),
-                    height: 1.4,
-                  ),
                   textAlign: TextAlign.left,
+                  text: TextSpan(
+                    style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontSize: isMobile ? 12 : 14,
+                      color: kAccent.withOpacity(0.9),
+                      height: 1.5,
+                    ),
+                    children: [
+                      TextSpan(text: "I’m "),
+                      TextSpan(
+                        text: "Ahmmed Thanveer",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: kAccent,
+                        ),
+                      ),
+                      TextSpan(
+                        text:
+                            ", a professional software developer passionate about creating clean, functional, and high-performance digital experiences. With expertise in Flutter, React, and WordPress, I bring ideas to life with modern design and scalable code.\n\n",
+                      ),
+                      TextSpan(
+                        text:
+                            "I have over 3 years of hands-on experience in Flutter development, building seamless mobile apps with beautiful UI and reliable architecture. My workflow focuses on creativity, problem-solving, and delivering practical solutions that truly make an impact.",
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
 
-          // 🔹 Camera + Arrows
+          // 🔹 Images + Camera Block
           AboutImageBlock(screenWidth: screenWidth),
         ],
       ),

@@ -10,7 +10,6 @@ class WorksSection extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 700;
     final isTablet = screenWidth >= 700 && screenWidth < 1100;
-    final isDesktop = screenWidth >= 1100;
 
     return Padding(
       padding: const EdgeInsets.only(top: 30, bottom: 30),
@@ -35,19 +34,15 @@ class WorksSection extends StatelessWidget {
                 children: [
                   // Title
                   Text(
-                    "works",
+                    "Projects",
                     style: const TextStyle(
                       fontFamily: "BebasNeue",
-                      // fontWeight: FontWeight.w800,
-                      fontSize: 120,
                       fontWeight: FontWeight.w800,
                       color: kAccent,
-                      // letterSpacing: -5,
                       height: 1,
                     ).copyWith(fontSize: isMobile ? 60 : (isTablet ? 90 : 120)),
                   ),
 
-                  // Button
                   if (!isMobile)
                     CustomOutlineButton(text: "View All", onPressed: () {}),
                 ],
@@ -64,15 +59,14 @@ class WorksSection extends StatelessWidget {
                   ? screenWidth * 0.6
                   : screenWidth * 0.4,
               child: Text(
-                "Explore a curated collection of images that traverse landscapes, emotions, and narratives. "
-                "From the intimate to the grandiose, witness the power of photography to evoke emotions.",
+                "A collection of my professional and personal projects built using Flutter, React, and WordPress. "
+                "These projects highlight my ability to build modern, scalable and user-friendly applications.",
                 textAlign: TextAlign.right,
                 style: TextStyle(
                   fontFamily: 'Montserrat',
                   fontSize: isMobile ? 13 : 15,
                   color: kAccent.withOpacity(0.9),
                   height: 1.5,
-                  fontWeight: FontWeight.w400,
                 ),
               ),
             ),
@@ -81,35 +75,59 @@ class WorksSection extends StatelessWidget {
 
             // ---- Big Image ----
             ClipRRect(
+              borderRadius: BorderRadiusGeometry.circular(isMobile ? 0 : 20),
               child: Image.asset(
-                "assets/images/wrk2.JPG",
-                width: double.infinity,
+                "assets/images/Wrk4.jpg",
+                width: isMobile
+                    ? double.infinity
+                    : isTablet
+                    ? 400
+                    : 1200,
+
                 height: isMobile
                     ? 220
                     : isTablet
                     ? 400
                     : 600,
-                fit: BoxFit.cover,
-                filterQuality: FilterQuality.low, // ✅ web performance optimized
+                fit: isMobile ? BoxFit.fill : BoxFit.fill,
+                filterQuality: FilterQuality.high,
               ),
             ),
 
             const SizedBox(height: 40),
 
-            // ---- Thumbnails + Arrows ----
+            // ---- Project Cards ----
             Column(
               children: [
-                // Thumbnails row
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _roundedImage("assets/images/wrk1.JPG", isMobile, isTablet),
+                    _projectTile(
+                      "assets/images/wrk5.JPG",
+                      "SafeAgent — Real Estate Rentals",
+                      "Real estate rental portal with maintenance service features & client dashboard.",
+                      isMobile,
+                      isTablet,
+                    ),
                     const SizedBox(width: 20),
-                    _roundedImage("assets/images/wrk2.JPG", isMobile, isTablet),
+                    _projectTile(
+                      "assets/images/wrk2.JPG",
+                      "Quizo — Quiz Application",
+                      "A Flutter-based quiz app with category selection, scoring & animations.",
+                      isMobile,
+                      isTablet,
+                    ),
                     const SizedBox(width: 20),
-                    _roundedImage("assets/images/wrk3.JPG", isMobile, isTablet),
+                    _projectTile(
+                      "assets/images/wrk3.JPG",
+                      "The Growth Companion LMS",
+                      "Learning Management System with video lessons, coaching modules & progress tracking.",
+                      isMobile,
+                      isTablet,
+                    ),
                   ],
                 ),
+
                 const SizedBox(height: 20),
 
                 // Arrows row
@@ -128,24 +146,62 @@ class WorksSection extends StatelessWidget {
     );
   }
 
-  Widget _roundedImage(String path, bool isMobile, bool isTablet) {
-    final double size = isMobile
-        ? 90.0
-        : (isTablet ? 140.0 : 180.0); // 👈 added .0 to make it double
+  // ------------------- Project Tile -------------------
+  Widget _projectTile(
+    String path,
+    String title,
+    String subtitle,
+    bool isMobile,
+    bool isTablet,
+  ) {
+    final double size = isMobile ? 90.0 : (isTablet ? 140.0 : 180.0);
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(18),
-      child: Image.asset(
-        path,
-        width: size,
-        height: size,
-        fit: BoxFit.cover,
-        filterQuality: FilterQuality.low, // ✅ improves web rendering
-      ),
+    return Column(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(18),
+          child: Image.asset(
+            path,
+            width: size,
+            height: size,
+            fit: BoxFit.cover,
+            filterQuality: FilterQuality.low,
+          ),
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          width: size + 20,
+          child: Column(
+            children: [
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: kAccent,
+                  fontFamily: "Montserrat",
+                  fontWeight: FontWeight.w600,
+                  fontSize: isMobile ? 11 : 12,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: kAccent.withOpacity(0.7),
+                  fontFamily: "Montserrat",
+                  fontSize: isMobile ? 9 : 10,
+                  height: 1.3,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
-  /// Small circle arrow buttons
+  // -------------------- Arrow Buttons --------------------
   Widget _circleArrowButton(IconData icon) {
     return SizedBox(
       width: 28,

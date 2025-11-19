@@ -14,7 +14,7 @@ class PortfolioCubit extends Cubit<PortfolioState> {
       const AssetImage("assets/images/hero_large.jpeg"),
       context,
     );
-    await precacheImage(const AssetImage("assets/images/user.png"), context);
+    await precacheImage(const AssetImage("assets/images/me.png"), context);
     await precacheImage(const AssetImage("assets/images/about.png"), context);
 
     // Small delay for smooth UX

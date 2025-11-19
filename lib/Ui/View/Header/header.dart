@@ -3,49 +3,51 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_portfolio/Core/Constants/app_colors.dart';
 import 'package:my_portfolio/Core/Utils/section_keys.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HeroHeader extends StatelessWidget {
   const HeroHeader({super.key});
+
+  // 🔗 Function to launch URL
+  Future<void> _openUrl(String url) async {
+    final Uri uri = Uri.parse(url);
+
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      throw Exception("Could not launch $url");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // Sizes responsive to screen
-    final double titleSize = screenWidth * 0.25; // "PUB DEV"
+    final double titleSize = screenWidth * 0.25;
 
-    // Different sizes for mobile vs larger screens
     final bool isMobile = screenWidth < 700;
     final bool isTablet = screenWidth >= 700 && screenWidth < 1100;
-    // 🔹 Header height responsive
-    final double headerHeight = isMobile
-        ? screenHeight *
-              0.50 // 👈 shorter for mobile
-        : isTablet
-        ? screenHeight *
-              0.65 // 👈 medium for tablets
-        : screenHeight * 0.70; // 👈 slightly taller for desktops
 
-    // final bool isDesktop = screenWidth >= 1100;
-    // 🖼️ User image sizes
-    final double userImageWidth = isMobile
-        ? screenWidth *
-              0.5 // Bigger on mobile
+    final double headerHeight = isMobile
+        ? screenHeight * 0.50
         : isTablet
-        ? screenWidth *
-              0.38 // Medium size on tablets
-        : screenWidth * 0.25; // Smaller on desktop
+        ? screenHeight * 0.65
+        : screenHeight * 0.70;
+
+    final double userImageWidth = isMobile
+        ? screenWidth * 0.5
+        : isTablet
+        ? screenWidth * 0.38
+        : screenWidth * 0.25;
 
     final double userImageHeight = isMobile
-        ? screenHeight *
-              0.30 // 📱 mobile
+        ? screenHeight * 0.30
         : isTablet
-        ? screenHeight *
-              0.55 // 📊 tablet (in-between)
-        : screenHeight * 0.55; // 🖥️ desktop
+        ? screenHeight * 0.55
+        : screenHeight * 0.55;
+
     final double bioWidthLeft = screenWidth * 0.35;
     final double bioWidthRight = screenWidth * 0.2;
+
     return Center(
       key: SectionKeys.hero,
       child: Padding(
@@ -65,22 +67,15 @@ class HeroHeader extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              // 📝 Big text ABOVE image
-              // 📝 Big text ABOVE image
+              // 📝 Large Title
               Positioned(
                 top: isMobile
-                    ? screenHeight *
-                          0.22 // 👈 less gap on mobile
+                    ? screenHeight * 0.22
                     : isTablet
-                    ? screenHeight *
-                          0.2 // Tablet → move a bit higher
-                    : screenHeight * 0.08, // normal for larger screens
-                // top: isMobile
-                //     ? screenHeight *
-                //           0.28 // 👈 less gap on mobile
-                //     : screenHeight * 0.08, // normal for larger screens
+                    ? screenHeight * 0.20
+                    : screenHeight * 0.13,
                 left: 0,
-                right: 30,
+                right: 25,
                 child: Text(
                   "PUB  DEV",
                   style: TextStyle(
@@ -94,14 +89,15 @@ class HeroHeader extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
               ),
-              // 🖼️ User Image FIRST → goes behind
+
+              // 🖼️ User Image
               Positioned(
                 bottom: 0,
-                left: isMobile ? 0 : 0, // 👈 shift right slightly in mobile
-                right: isMobile ? 30 : 0, // 👈 shift right slightly in mobile
+                left: isMobile ? 0 : 0,
+                right: isMobile ? 30 : 0,
                 child: Center(
                   child: Image.asset(
-                    'assets/images/user.png',
+                    'assets/images/me.png',
                     width: userImageWidth.clamp(120, 380),
                     height: userImageHeight.clamp(160, 480),
                     fit: BoxFit.fill,
@@ -109,20 +105,14 @@ class HeroHeader extends StatelessWidget {
                 ),
               ),
 
-              // 📜 Left bio text
+              // 📜 Right-side Bio (Short)
               Positioned(
                 right: 10,
                 top: isMobile
-                    ? screenHeight *
-                          0.4 // 👈 higher on mobile
+                    ? screenHeight * 0.40
                     : isTablet
-                    ? screenHeight *
-                          0.55 // Tablet → move a bit higher
+                    ? screenHeight * 0.55
                     : screenHeight * 0.40,
-                // top: isMobile
-                //     ? screenHeight *
-                //           0.45 // 👈 higher on mobile
-                //     : screenHeight * 0.40, // desktop/tablet
                 width: bioWidthRight.clamp(100, 300),
                 child: Text(
                   "What makes my work unique is a blend of technical expertise and personal creativity.",
@@ -136,18 +126,14 @@ class HeroHeader extends StatelessWidget {
                 ),
               ),
 
-              // Detect screen types
-
-              // 🤝 Right bio + social icons
+              // 🤝 Left Bio + Social Media Icons
               Positioned(
                 left: 40,
                 top: isMobile
-                    ? screenHeight *
-                          0.05 // Mobile → very close to top
+                    ? screenHeight * 0.05
                     : isTablet
-                    ? screenHeight *
-                          0.10 // Tablet → move a bit higher
-                    : screenHeight * 0.15, // Desktop → normal
+                    ? screenHeight * 0.10
+                    : screenHeight * 0.15,
                 width: bioWidthLeft.clamp(100, 300),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,22 +149,38 @@ class HeroHeader extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
+
+                    // 🔗 Social Buttons
                     Row(
                       children: [
                         IconButton(
                           icon: const Icon(FontAwesomeIcons.linkedin),
                           color: kDark,
-                          onPressed: () {},
+                          onPressed: () {
+                            _openUrl(
+                              "https://www.linkedin.com/in/thanveerahmmad?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app",
+                            );
+                          },
                         ),
+
                         IconButton(
                           icon: const Icon(FontAwesomeIcons.instagram),
                           color: kDark,
-                          onPressed: () {},
+                          onPressed: () {
+                            _openUrl(
+                              "https://www.instagram.com/thanveer_?igsh=MTBncmRkZm5odHJrbg%3D%3D&utm_source=qr",
+                            );
+                          },
                         ),
+
                         IconButton(
                           icon: const Icon(FontAwesomeIcons.facebook),
                           color: kDark,
-                          onPressed: () {},
+                          onPressed: () {
+                            _openUrl(
+                              "https://www.facebook.com/share/1Ai1AVwC46/?mibextid=wwXIfr",
+                            );
+                          },
                         ),
                       ],
                     ),
